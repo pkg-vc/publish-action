@@ -2,6 +2,7 @@ import { join } from "node:path";
 import { getInput, setFailed, setOutput, summary } from "@actions/core";
 import github from "@actions/github";
 import dedent from "dedent";
+// @ts-ignore
 import { publish_module } from "pkg.vc";
 
 async function main() {
@@ -23,14 +24,14 @@ async function main() {
 			await summary
 				.addHeading(`📦 ${package_name}`, 2)
 				.addHeading(`Install ${package_name} with:`, 3)
-				.addCodeBlock(
-					`${package_manager} install ${urls.url_commit}`,
-					"sh",
-				)
+				.addCodeBlock(`${package_manager} install ${urls.url_commit}`, "sh")
 				.write();
 			return;
 		}
-		const pr_number = github.context.payload.pull_request.number;
+		const pr_number = github.context?.payload.pull_request?.number;
+		if (!pr_number) {
+			throw new Error("Pull request number not found");
+		}
 		const { owner, repo } = github.context.repo;
 		const comments = await octokit.rest.issues.listComments({
 			owner,
@@ -40,8 +41,8 @@ async function main() {
 		const identifier = "pkg-vc:packages";
 		const existing_comment = comments.data.find(
 			(c) =>
-				c.user.login === "github-actions[bot]" &&
-				c.body.includes(identifier),
+				c?.user?.login === "github-actions[bot]" &&
+				c?.body?.includes(identifier),
 		);
 
 		// Create the new package section with markers
@@ -64,8 +65,8 @@ async function main() {
 			<!-- /pkg-vc:${package_name} -->
 		`;
 
-		let body;
-		if (existing_comment) {
+		let body: string;
+		if (existing_comment?.body) {
 			// Check if this package already exists in the comment
 			const package_regex = new RegExp(
 				`<!-- pkg-vc:${package_name} -->.*?<!-- /pkg-vc:${package_name} -->`,
@@ -116,7 +117,11 @@ async function main() {
 		setOutput("url_pr", urls.url_pr);
 		setOutput("command", `${package_manager} install ${urls.url_branch}`);
 	} catch (error) {
-		setFailed(error.message);
+		if (error instanceof Error) {
+			setFailed(error.message);
+		} else {
+			setFailed("An unknown error occurred");
+		}
 	}
 }
 
