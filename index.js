@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { getInput, setFailed, setOutput } from "@actions/core";
+import { getInput, setFailed, setOutput, summary } from "@actions/core";
 import github from "@actions/github";
 import dedent from "dedent";
 import { publish_module } from "pkg.vc";
@@ -19,7 +19,16 @@ async function main() {
 		);
 		const is_pr = github.context.payload.pull_request !== undefined;
 		if (!is_pr) {
-			throw new Error("This action is only supported for pull requests.");
+			setOutput("url_commit", urls.url_commit);
+			await summary
+				.addHeading(`📦 ${package_name}`, 2)
+				.addHeading(`Install ${package_name} with:`, 3)
+				.addCodeBlock(
+					`${package_manager} install ${urls.url_commit}`,
+					"sh",
+				)
+				.write();
+			return;
 		}
 		const pr_number = github.context.payload.pull_request.number;
 		const { owner, repo } = github.context.repo;
@@ -31,7 +40,8 @@ async function main() {
 		const identifier = "pkg-vc:packages";
 		const existing_comment = comments.data.find(
 			(c) =>
-				c.user.login === "github-actions[bot]" && c.body.includes(identifier),
+				c.user.login === "github-actions[bot]" &&
+				c.body.includes(identifier),
 		);
 
 		// Create the new package section with markers
