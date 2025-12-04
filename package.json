@@ -9,6 +9,7 @@
 		"lint": "biome check ."
 	},
 	"license": "MIT",
+	"module": "index.ts",
 	"dependencies": {
 		"@actions/core": "^1.11.1",
 		"@actions/github": "^6.0.1",
@@ -19,7 +20,6 @@
 		"@biomejs/biome": "1.9.4",
 		"@types/bun": "latest"
 	},
-	"module": "index.js",
 	"peerDependencies": {
 		"typescript": "^5.9.3"
 	}

@@ -24,10 +24,7 @@ async function main() {
 			await summary
 				.addHeading(`📦 ${package_name}`, 2)
 				.addHeading(`Install ${package_name} with:`, 3)
-				.addCodeBlock(
-					`${package_manager} install ${urls.url_commit}`,
-					"sh",
-				)
+				.addCodeBlock(`${package_manager} install ${urls.url_commit}`, "sh")
 				.write();
 			return;
 		}
