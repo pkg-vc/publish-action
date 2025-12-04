@@ -21,9 +21,12 @@ async function main() {
 		if (!is_pr) {
 			setOutput("url_commit", urls.url_commit);
 			await summary
-				.addHeading("📦 ${package_name}", 2)
-				.addHeading("Install ${package_name} with:", 3)
-				.addCodeBlock(`${package_manager} install ${urls.url_commit}`, "sh")
+				.addHeading(`📦 ${package_name}`, 2)
+				.addHeading(`Install ${package_name} with:`, 3)
+				.addCodeBlock(
+					`${package_manager} install ${urls.url_commit}`,
+					"sh",
+				)
 				.write();
 			return;
 		}
@@ -37,7 +40,8 @@ async function main() {
 		const identifier = "pkg-vc:packages";
 		const existing_comment = comments.data.find(
 			(c) =>
-				c.user.login === "github-actions[bot]" && c.body.includes(identifier),
+				c.user.login === "github-actions[bot]" &&
+				c.body.includes(identifier),
 		);
 
 		// Create the new package section with markers
