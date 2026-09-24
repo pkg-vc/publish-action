@@ -6,11 +6,14 @@ A GitHub Action that publishes packages to [pkg.vc](https://pkg.vc) and automati
 
 - 📦 Publish packages by calling the action multiple times
 - 💬 Automatically creates and updates a single PR comment listing all packages
+- 📝 On push and other non-PR workflows, writes a job summary with the commit install URL
 - 🚀 Provides multiple installation options (commit, branch, PR number)
 
 ## Usage
 
-Call the action once for each package you want to publish:
+Call the action once for each package you want to publish. Use `@2` to track the latest v2 release, or pin `@2.0.0` for an exact version.
+
+v2 requires the Node 24 action runtime (self-hosted runners **v2.327.1** or newer; macOS 13.4 and older and ARM32 self-hosted runners are not supported). `1.0.19` and earlier run on Node 20, which GitHub removed from Actions runners on 2026-09-23.
 
 ```yaml
 name: Publish to pkg.vc
@@ -25,27 +28,27 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Publish core package
-        uses: pkg-vc/publish-action@main
+        uses: pkg-vc/publish-action@2
         with:
           directory: "packages/core"
           organization: "your-org"
-          secret: ${{ secrets.TRY_MODULE_SECRET }}
+          secret: ${{ secrets.PKG_VC_SECRET }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Publish utils package
-        uses: pkg-vc/publish-action@main
+        uses: pkg-vc/publish-action@2
         with:
           directory: "packages/utils"
           organization: "your-org"
-          secret: ${{ secrets.TRY_MODULE_SECRET }}
+          secret: ${{ secrets.PKG_VC_SECRET }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Publish UI package
-        uses: pkg-vc/publish-action@main
+        uses: pkg-vc/publish-action@2
         with:
           directory: "packages/ui"
           organization: "your-org"
-          secret: ${{ secrets.TRY_MODULE_SECRET }}
+          secret: ${{ secrets.PKG_VC_SECRET }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
