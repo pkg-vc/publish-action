@@ -3,14 +3,13 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"dev": "rolldown -w -c",
-		"build": "rolldown -c",
-		"format": "pnpm biome check --write .",
-		"lint": "pnpm biome check .",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"dev": "bun run build --watch",
+		"build": "bun build index --outdir=dist --minify --target=node",
+		"format": "biome check --write .",
+		"lint": "biome check ."
 	},
 	"license": "MIT",
-	"packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39",
+	"module": "index.ts",
 	"dependencies": {
 		"@actions/core": "^1.11.1",
 		"@actions/github": "^6.0.1",
@@ -19,6 +18,9 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"rolldown": "1.0.0-beta.9"
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5.9.3"
 	}
 }
